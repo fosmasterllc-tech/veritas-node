@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VERITAS NODE // AUDIT TERMINAL</title>
+    <meta name="description" content="Veritas Forensic Node: Accessible automated audit terminal for algorithmic transparency. High contrast interface.">
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --alert-red: #ff3333;
+            --dark-bg: #050505;
+            --panel-bg: #111;
+            --border: 1px solid #333;
+            --ai-gold: #ffd700;
+            --focus-outline: #ffffff;
+        }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--neon-green);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100dvh;
+        }
+
+        /* ACCESSIBILITY FOCUS RINGS */
+        button:focus, a:focus, textarea:focus {
+            outline: 3px solid var(--focus-outline);
+            outline-offset: 4px;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            border-bottom: 2px solid var(--neon-green);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        h1 { 
+            margin: 0; 
+            font-size: 1.4rem; 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            font-weight: 900;
+            text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+        }
+        
+        .status { font-size: 0.7rem; color: #888; margin-top: 5px; }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .btn {
+            background: var(--panel-bg);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 20px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.1);
+        }
+
+        .btn:active { transform: scale(0.98); background: #003300; }
+        .btn.upload { background: var(--neon-green); color: black; font-weight: 900; box-shadow: 0 0 10px rgba(0, 255, 65, 0.4); }
+        .btn.ai { border-color: var(--ai-gold); color: var(--ai-gold); }
+        .btn.ai:active { background: #332b00; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            max-width: 500px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }
+
+        .close-btn {
+            position: sticky;
+            top: 10px;
+            float: right;
+            background: var(--alert-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid white;
+        }
+
+        .bounty-item {
+            border: 1px solid #333;
+            margin-bottom: 10px;
+            padding: 15px;
+            background: #0a0a0a;
+        }
+
+        .bounty-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .bounty-title { font-weight: bold; color: #fff; }
+        .bounty-code { color: var(--neon-green); font-size: 0.8rem; }
+        
+        .bounty-def {
+            display: none;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #ccc;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            line-height: 1.5;
+        }
+
+        .bounty-item.active .bounty-def { display: block; }
+        .bounty-item.active { border-color: var(--neon-green); background: #0f0f0f; }
+
+        .ai-input-zone {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            background: #111;
+            border: 1px solid var(--ai-gold);
+            color: white;
+            padding: 10px;
+            font-family: inherit;
+            resize: none;
+            font-size: 1rem;
+        }
+
+        .ai-output {
+            margin-top: 20px;
+            border: 1px solid #333;
+            padding: 15px;
+            background: #0a0a0a;
+            color: #ddd;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            display: none;
+            border-left: 3px solid var(--ai-gold);
+        }
+
+        .loading-bar {
+            height: 4px;
+            width: 0%;
+            background: var(--ai-gold);
+            transition: width 2s ease-in-out;
+            margin-top: 10px;
+        }
+
+        .log-console {
+            margin-top: auto;
+            width: 100%;
+            font-size: 0.7rem;
+            color: #888;
+            border-top: 1px solid #222;
+            padding-top: 10px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <header role="banner">
+        <h1>VERITAS NODE // AUDIT TERMINAL</h1>
+        <div class="status" role="status">OPERATOR: FOS_MASTER // LOC: CA // V28.0 (ACCESSIBLE)</div>
+    </header>
+
+    <main class="btn-grid" role="main">
+        <!-- LINK TO YOUR FORM: uubrGufSwKSt1sn88 -->
+        <button class="btn upload" onclick="window.open('https://forms.gle/uubrGufSwKSt1sn88', '_blank')" aria-label="Upload Evidence">
+            >>> UPLOAD EVIDENCE
+        </button>
+        
+        <button class="btn ai" onclick="openAI()" aria-label="Open AI Analyst">
+            ✨ AI FORENSIC ANALYST
+        </button>
+
+        <button class="btn" onclick="openBounties()" aria-label="View Bounty List">
+            [ VIEW HIT LIST ]
+        </button>
+
+        <button class="btn" onclick="window.open('https://www.retrogames.cc', '_blank')" aria-label="Open Loot Locker">
+            [ LOOT LOCKER ]
+        </button>
+    </main>
+
+    <div id="bountyModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('bountyModal')" aria-label="Close">CLOSE X</button>
+            <h2 style="color: white; border-bottom: 1px solid #333; padding-bottom: 10px;">ACTIVE TARGETS</h2>
+            <div id="bountyList" role="list"></div>
+        </div>
+    </div>
+
+    <div id="aiModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('aiModal')" aria-label="Close">CLOSE X</button>
+            <h2 style="color: var(--ai-gold); border-bottom: 1px solid #333; padding-bottom: 10px;">FORENSIC ANALYST</h2>
+            <div class="ai-input-zone">
+                <textarea id="aiInput" placeholder="EX: The game disconnected right when I got 3 scatters..."></textarea>
+                <button class="btn ai" onclick="analyzeEvidence()">RUN ANALYSIS</button>
+                <div class="loading-bar" id="loadBar"></div>
+            </div>
+            <div id="aiOutput" class="ai-output" aria-live="polite"></div>
+            <button class="btn" style="margin-top: 10px; font-size: 0.8rem; padding: 10px;" onclick="copyAnalysis()">[ COPY REPORT ]</button>
+        </div>
+    </div>
+
+    <div class="log-console" role="contentinfo">
+        <div style="color: #00ff41; font-size: 0.7rem; margin-bottom: 10px; border: 1px solid #00ff41; padding: 5px; display: inline-block;">
+            ★ PROUD PARTNER: 10% OF PROCEEDS DONATED TO PEDIATRIC CANCER RESEARCH ★
+        </div><br>
+        > SYSTEM READY...<br>
+        > WAITING FOR INPUT...
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const apiKey = ""; 
+        
+        // --- DATA ---
+        const bounties = [
+            { code: "PHANTOM_CREDIT", title: "Lapsed Reconciliation", def: "Money appears in balance ONLY after a new deposit is made." },
+            { code: "BOOT_AND_COOL", title: "Session Interrupt (SIS)", def: "Forced network disconnect during a bonus or high multiplier." },
+            { code: "THE_SYNC", title: "Multi-Site Lock", def: "Two or more unrelated casinos go 'cold' at the exact same time." },
+            { code: "GHOST_SPIN", title: "Visual Desync", def: "Reels spin indefinitely, balance drops, but no result is shown." },
+            { code: "VIPER_STRIKE", title: "Win-Cap Correction", def: "A massive win visually hits but 'glitches' to a small win." },
+            { code: "PATTERN_LOCK", title: "Entropy Failure", def: "Receiving the exact same losing symbol combination 3+ times in a row." },
+            { code: "DEALER_SNAP", title: "Live Dealer Rigging", def: "Dealer pulls a 5-card 21 or impossible card sequence." },
+            { code: "MAGNET_BALL", title: "Physics Override", def: "Roulette/Plinko: The ball physically 'hops' out of a winning slot." },
+            { code: "RIVER_RAT", title: "Action-Induced RNG", def: "Poker: You are a 95% favorite, and the River is a 1-outer." },
+            { code: "DEAD_SWITCH", title: "General Variance", def: "50+ consecutive spins with zero wins." },
+            { code: "RTP_THROTTLE", title: "Bonus Lag", def: "Game speed slows down significantly during bonus rounds." }
+        ];
+
+        // --- FUNCTIONS ---
+        function openBounties() {
+            const container = document.getElementById('bountyList');
+            container.innerHTML = '';
+            bounties.forEach(b => {
+                const div = document.createElement('div');
+                div.className = 'bounty-item';
+                div.setAttribute('role', 'listitem');
+                div.setAttribute('tabindex', '0');
+                div.innerHTML = `
+                    <div class="bounty-header">
+                        <span class="bounty-title">${b.title}</span>
+                        <span class="bounty-code">#${b.code}</span>
+                    </div>
+                    <div class="bounty-def">${b.def}</div>
+                `;
+                div.onclick = () => {
+                    document.querySelectorAll('.bounty-item').forEach(i => i !== div && i.classList.remove('active'));
+                    div.classList.toggle('active');
+                };
+                container.appendChild(div);
+            });
+            document.getElementById('bountyModal').style.display = 'block';
+        }
+
+        function openAI() { document.getElementById('aiModal').style.display = 'block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function copyAnalysis() {
+            const text = document.getElementById('aiOutput').innerText;
+            if(!text) return;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert("REPORT COPIED.");
+        }
+
+        async function analyzeEvidence() {
+            const input = document.getElementById('aiInput').value;
+            const outputDiv = document.getElementById('aiOutput');
+            const loadBar = document.getElementById('loadBar');
+            
+            if (!input.trim()) return;
+
+            outputDiv.style.display = 'block';
+            outputDiv.innerText = ">> INITIALIZING FORENSIC SCAN...";
+            loadBar.style.width = "30%";
+
+            const systemPrompt = `You are the Veritas Forensic Node AI. Analyze the user's report. Identify the specific Forensic Anomaly code from the list. Output Format: >>> ANOMALY DETECTED: [Code] >>> SEVERITY: [High] >>> LOG: [Brief explanation]. Tone: Military/Legal.`;
+
+            try {
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: input }] }], systemInstruction: { parts: [{ text: systemPrompt }] } })
+                    }
+                );
+                loadBar.style.width = "70%";
+                const data = await response.json();
+                if (data.error) throw new Error(data.error.message);
+                loadBar.style.width = "100%";
+                outputDiv.innerText = data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                outputDiv.innerText = ">> ERROR: " + error.message;
+                loadBar.style.width = "0%";
+            }
+        }
+    </script>
+</body>
+</html>
+
+
