@@ -196,8 +196,22 @@
 
     <header role="banner">
         <h1>VERITAS NODE // AUDIT TERMINAL</h1>
-        <div class="status" role="status">OPERATOR: FOS_MASTER // LOC: CA // V28.0 (ACCESSIBLE)</div>
-    </header>
+       <div class="status" role="status" style="font-size: 0.8rem; border: 1px solid #00ff00; padding: 5px; margin-top: 10px;">
+    [SYSTEM: <span style="color: #00ff00;">ONLINE</span>] 
+    [VAULT: <span style="color: #00ff00;">SECURE</span>] 
+    [QUEUED: <span style="animation: blink 1s infinite;">8,492</span>]
+</div>
+<style>@keyframes blink { 50% { opacity: 0.3; } }</style>
+
+<div id="veritas-ssl-widget" style="background: #000; border: 1px solid #00ff00; color: #00ff00; padding: 15px; font-family: 'Courier New', monospace; margin: 20px auto; max-width: 90%; text-align: left;">
+    <h3 style="text-align: center; border-bottom: 1px solid #00ff00; margin-top: 0;">[SSL FORENSIC CHECK]</h3>
+    <p style="font-size: 0.8rem;"><strong>TARGET:</strong> Verify 'Issued To' field.</p>
+    <div style="background: #111; padding: 10px; font-size: 0.8rem; border: 1px dashed #333;">
+        <span style="color: #ff3333;">⚠ RED FLAG:</span> "sdk.ads1ddcc.com"<br>
+        <span style="color: #ff3333;">⚠ RED FLAG:</span> "ZeroSSL" / "Cloudflare"<br>
+    </div>
+    <p style="font-size: 0.8rem; text-align: center;">If certificates match these proxies, capture video immediately.</p>
+</div>
 
     <main class="btn-grid" role="main">
         <!-- LINK TO YOUR FORM: uubrGufSwKSt1sn88 -->
