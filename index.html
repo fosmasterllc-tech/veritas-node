@@ -213,25 +213,31 @@
     <p style="font-size: 0.8rem; text-align: center;">If certificates match these proxies, capture video immediately.</p>
 </div>
 
-    <main class="btn-grid" role="main">
-        <!-- LINK TO YOUR FORM: uubrGufSwKSt1sn88 -->
-         <button class="btn upload" onclick="generateToken(); window.open('https://forms.gle/uubrGufSwKSt1sn88','_blank')">
-aria-label="Upload Evidence"
-            >>> UPLOAD EVIDENCE
-        </button>
-        
-        <button class="btn ai" onclick="openAI()" aria-label="Open AI Analyst">
-            ✨ AI FORENSIC ANALYST
-        </button>
+   <style>
+    /* FORCE FULL WIDTH ON MOBILE */
+    body { padding: 15px !important; width: 100% !important; max-width: 100% !important; overflow-x: hidden; }
+    .btn-grid { width: 100% !important; max-width: 100% !important; display: flex; flex-direction: column; }
+    .btn { width: 100% !important; padding: 25px !important; font-size: 1.2rem !important; white-space: normal; }
+    #veritas-ssl-widget { width: 100% !important; max-width: 100% !important; box-sizing: border-box; }
+</style>
 
-        <button class="btn" onclick="openBounties()" aria-label="View Bounty List">
-            [ VIEW HIT LIST ]
-        </button>
+<main class="btn-grid" role="main">
+    <button class="btn upload" onclick="generateToken(); window.open('https://forms.gle/uubrGufSwKSt1sn88','_blank')" aria-label="Upload Evidence">
+        >>> UPLOAD EVIDENCE
+    </button>
 
-        <button class="btn" onclick="window.open('https://www.retrogames.cc', '_blank')" aria-label="Open Loot Locker">
-            [ LOOT LOCKER ]
-        </button>
-    </main>
+    <button class="btn ai" onclick="openAI()" aria-label="Open AI Analyst">
+        ✨ AI FORENSIC ANALYST
+    </button>
+
+    <button class="btn" onclick="openBounties()" aria-label="View Bounty List">
+        [ VIEW HIT LIST ]
+    </button>
+
+    <button class="btn" onclick="window.open('https://www.retrogames.cc', '_blank')" aria-label="Open Loot Locker">
+        [ LOOT LOCKER ]
+    </button>
+</main>
 
     <div id="bountyModal" class="modal" role="dialog" aria-modal="true">
         <div class="modal-content">
