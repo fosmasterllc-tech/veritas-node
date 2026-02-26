@@ -221,23 +221,46 @@
     #veritas-ssl-widget { width: 100% !important; max-width: 100% !important; box-sizing: border-box; }
 </style>
 
-<main class="btn-grid" role="main">
-    <button class="btn upload" onclick="generateToken(); window.open('https://forms.gle/uubrGufSwKSt1sn88','_blank')" aria-label="Upload Evidence">
+<div id="legalModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.95); overflow:auto;">
+    <div style="background:#000; border:3px solid #ff0000; margin:10% auto; padding:25px; width:90%; max-width:500px; box-shadow: 0 0 30px #ff0000;">
+        <h2 style="color:#ff0000; text-align:center; font-family:monospace; border-bottom:1px solid #ff0000; padding-bottom:10px;">SWORN AFFIDAVIT</h2>
+        
+        <p style="color:#fff; font-size:0.9rem; line-height:1.5; font-family:monospace; background:#111; padding:15px; border:1px solid #333;">
+            "I certify under penalty of perjury that this evidence is a true and unaltered recording of my session. I authorize **FOS MASTER LLC** to archive this data for forensic auditing and legal discovery."
+        </p>
+
+        <button onclick="confirmLegal()" style="width:100%; background:#00ff00; color:#000; padding:20px; font-weight:bold; font-size:1.2rem; border:none; margin-top:15px; cursor:pointer;">
+            [ I AGREE / SIGN DIGITALLY ]
+        </button>
+
+        <button onclick="document.getElementById('legalModal').style.display='none'" style="width:100%; background:transparent; color:#666; padding:10px; border:none; margin-top:10px; font-size:0.8rem;">
+            CANCEL FILING
+        </button>
+    </div>
+</div>
+
+<main class="btn-grid" style="padding:20px; text-align:center;">
+    <button class="btn upload" onclick="document.getElementById('legalModal').style.display='block'" style="width:100%; padding:25px; background:#00ff00; color:#000; font-weight:bold; border:none; border-radius:5px; font-size:1.1rem;">
         >>> UPLOAD EVIDENCE
     </button>
-
-    <button class="btn ai" onclick="openAI()" aria-label="Open AI Analyst">
-        ✨ AI FORENSIC ANALYST
-    </button>
-
-    <button class="btn" onclick="openBounties()" aria-label="View Bounty List">
-        [ VIEW HIT LIST ]
-    </button>
-
-    <button class="btn" onclick="window.open('https://www.retrogames.cc', '_blank')" aria-label="Open Loot Locker">
-        [ LOOT LOCKER ]
-    </button>
+    
+    <div style="margin-top:20px;">
+        <button class="btn ai" onclick="alert('Analyst Initializing...')" style="width:100%; padding:15px; background:#1a1a1a; color:#00ff00; border:1px solid #00ff00;">
+            ✨ AI FORENSIC ANALYST
+        </button>
+    </div>
 </main>
+
+<script>
+    function confirmLegal() {
+        document.getElementById('legalModal').style.display = 'none';
+        generateToken(); // This triggers your existing token generator
+        setTimeout(() => {
+            window.open('https://forms.gle/uubrGufSwKSt1sn88','_blank');
+        }, 800);
+    }
+</script>
+
 
     <div id="bountyModal" class="modal" role="dialog" aria-modal="true">
         <div class="modal-content">
